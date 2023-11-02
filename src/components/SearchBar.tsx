@@ -1,57 +1,75 @@
 import React from 'react';
+import { Character, EmptyInputResponse } from '../types/types';
+import { fetchCharacters, searchCharacter } from '../service/service';
 
-class SearchBar extends React.Component {
-    searchValue: string;
+interface Props {
+    fetchCharacters: () => Promise<EmptyInputResponse>;
+    searchCharacter: (id: number) => Promise<Character>;
+}
 
-    data: object;
+type StateType = {
+    inputValue: string;
+    errorMsg: string;
+};
 
-    constructor(props: object | Readonly<object>) {
-        super(props);
-        this.searchValue = '';
-        this.data = {};
-    }
+class SearchBar extends React.Component<Props, StateType> {
+    // searchValue: string;
+
+    // data: object;
+
+    public inputValue = '';
+
+    public state: StateType = {
+        inputValue: localStorage.getItem('inputValue') || '',
+        errorMsg: '',
+    };
 
     changeInputValue(value: string) {
-        this.setState({ state: (this.searchValue = value) });
+        this.setState({ inputValue: value });
+        console.log(this.state.inputValue);
     }
 
-    setSearchData(data: object) {
-        this.data = data;
-    }
-
-    async makeApiCall(value: string) {
-        const result = await fetch(
-            `
-            https://rickandmortyapi.com/api/character/${value}`,
-            {
-                method: 'GET',
+    async makeApiCall() {
+        const inputValue = this.state.inputValue;
+        if (inputValue.length > 0) {
+            try {
+                const result = await searchCharacter(inputValue);
+                console.log(result);
+            } catch (err) {
+                if (err instanceof Error) {
+                    this.setState({ errorMsg: err.message });
+                }
             }
-        );
-        const json = await result.json();
-        console.log(json);
-        this.setSearchData(json);
+        } else {
+            try {
+                const result = await fetchCharacters();
+                console.log(result);
+            } catch (err) {
+                if (err instanceof Error) {
+                    this.setState({ errorMsg: err.message });
+                }
+            }
+        }
     }
 
     async componentDidMount(): Promise<void> {
-        await this.makeApiCall(this.searchValue);
-        console.log(this.data);
+        await this.makeApiCall();
     }
 
     render(): React.ReactNode {
+        const inputValue = this.state.inputValue;
         return (
             <div>
                 <div>
                     <h1>Find your Rick and Morty character</h1>
                     <input
                         type="text"
-                        value={this.searchValue}
+                        value={inputValue}
                         onChange={(e) => {
                             this.changeInputValue(e.target.value);
                         }}
                     />
-                    <button onClick={() => this.makeApiCall(this.searchValue)}>
-                        Search
-                    </button>
+                    <button onClick={() => this.makeApiCall()}>Search</button>
                 </div>
             </div>
         );
