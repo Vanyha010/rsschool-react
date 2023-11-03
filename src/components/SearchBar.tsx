@@ -1,10 +1,9 @@
 import React from 'react';
-import { Character, EmptyInputResponse } from '../types/types';
+import { Character } from '../types/types';
 import { fetchCharacters, searchCharacter } from '../service/service';
 
 interface Props {
-    fetchCharacters: () => Promise<EmptyInputResponse>;
-    searchCharacter: (id: number) => Promise<Character>;
+    setCharacter: (characters: Character[]) => void;
 }
 
 type StateType = {
@@ -13,12 +12,6 @@ type StateType = {
 };
 
 class SearchBar extends React.Component<Props, StateType> {
-    // searchValue: string;
-
-    // data: object;
-
-    public inputValue = '';
-
     public state: StateType = {
         inputValue: localStorage.getItem('inputValue') || '',
         errorMsg: '',
@@ -26,15 +19,23 @@ class SearchBar extends React.Component<Props, StateType> {
 
     changeInputValue(value: string) {
         this.setState({ inputValue: value });
-        console.log(this.state.inputValue);
+    }
+
+    submitInputValue() {
+        localStorage.setItem('inputValue', this.state.inputValue);
+
+        this.makeApiCall();
     }
 
     async makeApiCall() {
-        const inputValue = this.state.inputValue;
+        const { setCharacter } = this.props;
+        const { inputValue } = this.state;
         if (inputValue.length > 0) {
             try {
                 const result = await searchCharacter(inputValue);
-                console.log(result);
+                const arr = [];
+                arr.push(result);
+                setCharacter(arr);
             } catch (err) {
                 if (err instanceof Error) {
                     this.setState({ errorMsg: err.message });
@@ -42,8 +43,8 @@ class SearchBar extends React.Component<Props, StateType> {
             }
         } else {
             try {
-                const result = await fetchCharacters();
-                console.log(result);
+                const { results } = await fetchCharacters();
+                setCharacter(results);
             } catch (err) {
                 if (err instanceof Error) {
                     this.setState({ errorMsg: err.message });
@@ -53,7 +54,7 @@ class SearchBar extends React.Component<Props, StateType> {
     }
 
     async componentDidMount(): Promise<void> {
-        await this.makeApiCall();
+        this.makeApiCall();
     }
 
     render(): React.ReactNode {
@@ -69,7 +70,9 @@ class SearchBar extends React.Component<Props, StateType> {
                             this.changeInputValue(e.target.value);
                         }}
                     />
-                    <button onClick={() => this.makeApiCall()}>Search</button>
+                    <button onClick={() => this.submitInputValue()}>
+                        Search
+                    </button>
                 </div>
             </div>
         );

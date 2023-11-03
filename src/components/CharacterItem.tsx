@@ -12,7 +12,10 @@ class CharacterItem extends React.Component<PropsType> {
         return (
             <div>
                 <h3>{character.name}</h3>
-                <p>{character.id}</p>
+                <img src={character.image} />
+                <p>Status: {character.status}</p>
+                <p>Species: {character.species}</p>
+                <p>Gender: {character.gender}</p>
             </div>
         );
     }
