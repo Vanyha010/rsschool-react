@@ -1,5 +1,5 @@
 import React from 'react';
-import { Character } from '../types/types';
+import { Character } from '../../types/types';
 
 type PropsType = {
     character: Character;

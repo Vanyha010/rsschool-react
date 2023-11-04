@@ -1,6 +1,6 @@
 import React from 'react';
-import { Character } from '../types/types';
-import CharacterItem from './CharacterItem';
+import { Character } from '../../types/types';
+import CharacterItem from '../CharacterItem/CharacterItem';
 
 type PropsType = {
     characters: Character[];
@@ -20,8 +20,8 @@ class CharacterList extends React.Component<PropsType> {
         }
         return (
             <ul>
-                {characters.map((character, idx) => (
-                    <CharacterItem character={character} key={idx} />
+                {characters.map((character) => (
+                    <CharacterItem character={character} key={character.id} />
                 ))}
             </ul>
         );
