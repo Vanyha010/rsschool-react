@@ -4,12 +4,20 @@ import CharacterItem from '../CharacterItem/CharacterItem';
 
 type PropsType = {
     characters: Character[];
+    error: string;
 };
 
 class CharacterList extends React.Component<PropsType> {
     render(): React.ReactNode {
-        const { characters } = this.props;
-        // console.log(characters);
+        const { characters, error } = this.props;
+
+        if (error) {
+            return (
+                <div>
+                    <p>{error}</p>
+                </div>
+            );
+        }
 
         if (characters.length === 0) {
             return (

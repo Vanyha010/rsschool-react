@@ -3,7 +3,7 @@ import './Loader.css';
 
 class Loader extends Component {
     render() {
-        return <img className="loader" src="../pokeball.svg"></img>;
+        return <img className="loader" src="../loader-icon.png"></img>;
     }
 }
 

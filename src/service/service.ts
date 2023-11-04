@@ -1,4 +1,4 @@
-import { EmptyInputResponse, Character } from '../types/types';
+import { EmptyInputResponse, Character, APIError } from '../types/types';
 
 export async function fetchCharacters(): Promise<EmptyInputResponse> {
     try {
@@ -11,7 +11,9 @@ export async function fetchCharacters(): Promise<EmptyInputResponse> {
     }
 }
 
-export async function searchCharacter(id: string): Promise<Character> {
+export async function searchCharacter(
+    id: string
+): Promise<Character | APIError> {
     try {
         const response = await fetch(
             `https://rickandmortyapi.com/api/character/${id}`

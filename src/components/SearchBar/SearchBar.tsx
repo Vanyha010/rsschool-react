@@ -5,6 +5,7 @@ import { fetchCharacters, searchCharacter } from '../../service/service';
 interface Props {
     setCharacter: (characters: Character[]) => void;
     setLoading: (value: boolean) => void;
+    setError: (error: string) => void;
 }
 
 type StateType = {
@@ -29,17 +30,23 @@ class SearchBar extends React.Component<Props, StateType> {
     }
 
     async makeApiCall() {
-        const { setCharacter, setLoading } = this.props;
+        const { setCharacter, setLoading, setError } = this.props;
         const { inputValue } = this.state;
         if (inputValue.length > 0) {
             try {
                 setLoading(true);
                 const result = await searchCharacter(inputValue);
                 const arr = [];
-                arr.push(result);
-                setCharacter(arr);
+                if ('error' in result) {
+                    setError(result.error);
+                } else {
+                    arr.push(result);
+                    setCharacter(arr);
+                }
+
                 setLoading(false);
             } catch (err) {
+                console.log(err);
                 if (err instanceof Error) {
                     this.setState({ errorMsg: err.message });
                 }
@@ -51,6 +58,7 @@ class SearchBar extends React.Component<Props, StateType> {
                 setCharacter(results);
                 setLoading(false);
             } catch (err) {
+                console.log(err);
                 if (err instanceof Error) {
                     this.setState({ errorMsg: err.message });
                 }

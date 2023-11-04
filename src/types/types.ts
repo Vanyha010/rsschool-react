@@ -27,4 +27,11 @@ export interface APIError {
     error: string;
 }
 
+// export class APIError {
+//     error: string;
+//     constructor(error: string) {
+//         this.error = error;
+//     }
+// }
+
 // export type APIResponse = Character | EmptyInputResponse | APIError;
