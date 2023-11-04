@@ -40,6 +40,7 @@ class SearchBar extends React.Component<Props, StateType> {
                 if ('error' in result) {
                     setError(result.error);
                 } else {
+                    setError('');
                     arr.push(result);
                     setCharacter(arr);
                 }
@@ -55,6 +56,7 @@ class SearchBar extends React.Component<Props, StateType> {
             try {
                 setLoading(true);
                 const { results } = await fetchCharacters();
+                setError('');
                 setCharacter(results);
                 setLoading(false);
             } catch (err) {
