@@ -1,6 +1,7 @@
 import React from 'react';
 import { Character } from '../../types/types';
 import { fetchCharacters, searchCharacter } from '../../service/service';
+import ErrorButton from '../ErrorBoundary/ErrorButton';
 
 interface Props {
     setCharacter: (characters: Character[]) => void;
@@ -88,6 +89,7 @@ class SearchBar extends React.Component<Props, StateType> {
                     <button onClick={() => this.submitInputValue()}>
                         Search
                     </button>
+                    <ErrorButton />
                 </div>
             </div>
         );

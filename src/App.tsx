@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar/SearchBar';
 import { Character } from './types/types';
 import CharacterList from './components/CharacterList/CharacterList';
 import Loader from './components/Loader/Loader';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 type StateType = {
     character: Character[];
@@ -29,20 +30,25 @@ class App extends React.Component {
         const { character, error } = this.state;
         return (
             <div>
-                <section>
-                    <SearchBar
-                        setCharacter={this.setCharacter}
-                        setLoading={this.setLoading}
-                        setError={this.setError}
-                    />
-                </section>
-                <section>
-                    {this.state.isLoading ? (
-                        <Loader />
-                    ) : (
-                        <CharacterList characters={character} error={error} />
-                    )}
-                </section>
+                <ErrorBoundary>
+                    <section>
+                        <SearchBar
+                            setCharacter={this.setCharacter}
+                            setLoading={this.setLoading}
+                            setError={this.setError}
+                        />
+                    </section>
+                    <section>
+                        {this.state.isLoading ? (
+                            <Loader />
+                        ) : (
+                            <CharacterList
+                                characters={character}
+                                error={error}
+                            />
+                        )}
+                    </section>
+                </ErrorBoundary>
             </div>
         );
     }
