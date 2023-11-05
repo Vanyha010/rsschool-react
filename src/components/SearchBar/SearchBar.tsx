@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Character } from '../../types/types';
 import { fetchCharacters, searchCharacter } from '../../service/service';
 import ErrorButton from '../ErrorBoundary/ErrorButton';
@@ -9,30 +9,20 @@ interface Props {
     setError: (error: string) => void;
 }
 
-type StateType = {
-    inputValue: string;
-    errorMsg: string;
-};
+function SearchBar(props: Props) {
+    const [inputValue, setInputValue] = useState(
+        localStorage.getItem('inputValue') || ''
+    );
+    const [errorMsg, setErrorMsg] = useState('');
 
-class SearchBar extends React.Component<Props, StateType> {
-    public state: StateType = {
-        inputValue: localStorage.getItem('inputValue') || '',
-        errorMsg: '',
-    };
+    function submitInputValue() {
+        localStorage.setItem('inputValue', inputValue);
 
-    changeInputValue(value: string) {
-        this.setState({ inputValue: value });
+        makeApiCall();
     }
 
-    submitInputValue() {
-        localStorage.setItem('inputValue', this.state.inputValue);
-
-        this.makeApiCall();
-    }
-
-    async makeApiCall() {
-        const { setCharacter, setLoading, setError } = this.props;
-        const { inputValue } = this.state;
+    async function makeApiCall() {
+        const { setCharacter, setLoading, setError } = props;
         if (inputValue.length > 0) {
             try {
                 setLoading(true);
@@ -50,7 +40,7 @@ class SearchBar extends React.Component<Props, StateType> {
             } catch (err) {
                 console.log(err);
                 if (err instanceof Error) {
-                    this.setState({ errorMsg: err.message });
+                    setErrorMsg(err.message);
                 }
             }
         } else {
@@ -63,37 +53,37 @@ class SearchBar extends React.Component<Props, StateType> {
             } catch (err) {
                 console.log(err);
                 if (err instanceof Error) {
-                    this.setState({ errorMsg: err.message });
+                    setErrorMsg(err.message);
                 }
             }
         }
     }
 
-    async componentDidMount(): Promise<void> {
-        this.makeApiCall();
+    useEffect(() => {
+        makeApiCall();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    if (errorMsg) {
+        return <div>{errorMsg}</div>;
     }
 
-    render(): React.ReactNode {
-        const inputValue = this.state.inputValue;
-        return (
+    return (
+        <div>
             <div>
-                <div>
-                    <h1>Find your Rick and Morty character</h1>
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => {
-                            this.changeInputValue(e.target.value);
-                        }}
-                    />
-                    <button onClick={() => this.submitInputValue()}>
-                        Search
-                    </button>
-                    <ErrorButton />
-                </div>
+                <h1>Find your Rick and Morty character</h1>
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => {
+                        setInputValue(e.target.value);
+                    }}
+                />
+                <button onClick={() => submitInputValue()}>Search</button>
+                <ErrorButton />
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default SearchBar;
