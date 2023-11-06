@@ -5,7 +5,9 @@ export async function fetchCharacters(): Promise<EmptyInputResponse> {
         const response = await fetch(
             'https://rickandmortyapi.com/api/character/?page=1'
         );
-        return await response.json();
+        const result = await response.json();
+        console.log(result);
+        return result;
     } catch {
         throw new Error('Sorry, can`t fetch characters');
     }
@@ -13,12 +15,13 @@ export async function fetchCharacters(): Promise<EmptyInputResponse> {
 
 export async function searchCharacter(
     id: string
-): Promise<Character | APIError> {
+): Promise<Character | APIError | Character[]> {
     try {
         const response = await fetch(
             `https://rickandmortyapi.com/api/character/${id}`
         );
-        return await response.json();
+        const result = await response.json();
+        return result;
     } catch {
         throw new Error('Sorry, can`t find this character');
     }

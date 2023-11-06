@@ -32,7 +32,13 @@ function SearchBar(props: Props) {
                     setError(result.error);
                 } else {
                     setError('');
-                    arr.push(result);
+                    if (result instanceof Array) {
+                        result.forEach((item) => {
+                            arr.push(item);
+                        });
+                    } else {
+                        arr.push(result);
+                    }
                     setCharacter(arr);
                 }
 
