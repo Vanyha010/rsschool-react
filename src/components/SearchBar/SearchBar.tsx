@@ -1,19 +1,31 @@
-import { useEffect, useState } from 'react';
-import { Character } from '../../types/types';
-import { fetchCharacters, searchCharacter } from '../../service/service';
+import { useEffect, useState, ChangeEvent } from 'react';
+import { AnimeData } from '../../types/types';
+import { fetchAnime } from '../../service/service';
 import ErrorButton from '../ErrorBoundary/ErrorButton';
+import './SearchBar.css';
 
 interface Props {
-    setCharacter: (characters: Character[]) => void;
+    setAnimeTitles: (animeTitles: AnimeData[]) => void;
     setLoading: (value: boolean) => void;
     setError: (error: string) => void;
 }
 
 function SearchBar(props: Props) {
+    const allowedInputSymbols = /\D/;
+    const [inputError, setInputError] = useState('');
     const [inputValue, setInputValue] = useState(
         localStorage.getItem('inputValue') || ''
     );
-    const [errorMsg, setErrorMsg] = useState('');
+
+    function checkInputValue(event: ChangeEvent<HTMLInputElement>) {
+        if (event.target.value.match(allowedInputSymbols)) {
+            event.preventDefault();
+            setInputError('You can provide only id');
+        } else {
+            setInputError('');
+            setInputValue(event.target.value);
+        }
+    }
 
     function submitInputValue() {
         localStorage.setItem('inputValue', inputValue);
@@ -22,47 +34,28 @@ function SearchBar(props: Props) {
     }
 
     async function makeApiCall() {
-        const { setCharacter, setLoading, setError } = props;
-        if (inputValue.length > 0) {
-            try {
-                setLoading(true);
-                const result = await searchCharacter(inputValue);
-                const arr = [];
-                if ('error' in result) {
-                    setError(result.error);
+        const { setAnimeTitles, setLoading, setError } = props;
+        setLoading(true);
+        try {
+            const result = await fetchAnime(inputValue);
+            if ('error' in result) {
+                setError(result.message);
+            } else {
+                if (Array.isArray(result.data)) {
+                    setAnimeTitles(result.data);
                 } else {
-                    setError('');
-                    if (result instanceof Array) {
-                        result.forEach((item) => {
-                            arr.push(item);
-                        });
-                    } else {
-                        arr.push(result);
-                    }
-                    setCharacter(arr);
+                    const arr: AnimeData[] = [];
+                    arr.push(result.data);
+                    setAnimeTitles(arr);
                 }
-
-                setLoading(false);
-            } catch (err) {
-                console.log(err);
-                if (err instanceof Error) {
-                    setErrorMsg(err.message);
-                }
-            }
-        } else {
-            try {
-                setLoading(true);
-                const { results } = await fetchCharacters();
                 setError('');
-                setCharacter(results);
-                setLoading(false);
-            } catch (err) {
-                console.log(err);
-                if (err instanceof Error) {
-                    setErrorMsg(err.message);
-                }
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                console.log(e);
             }
         }
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -70,21 +63,18 @@ function SearchBar(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (errorMsg) {
-        return <div>{errorMsg}</div>;
-    }
-
     return (
         <div>
             <div>
-                <h1>Find your Rick and Morty character</h1>
+                <h1>Find your Anime</h1>
                 <input
                     type="text"
                     value={inputValue}
                     onChange={(e) => {
-                        setInputValue(e.target.value);
+                        checkInputValue(e);
                     }}
                 />
+                {inputError && <div className="error"> {inputError} </div>}
                 <button onClick={() => submitInputValue()}>Search</button>
                 <ErrorButton />
             </div>

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar/SearchBar';
-import { Character } from './types/types';
-import CharacterList from './components/CharacterList/CharacterList';
+import { AnimeData } from './types/types';
+import AnimeList from './components/AnimeList/AnimeList';
 import Loader from './components/Loader/Loader';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
-    const [character, setCharacter] = useState<Character[]>([]);
+    const [animeTitles, setAnimeTitles] = useState<AnimeData[]>([]);
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -16,7 +16,7 @@ function App() {
             <ErrorBoundary>
                 <section>
                     <SearchBar
-                        setCharacter={setCharacter}
+                        setAnimeTitles={setAnimeTitles}
                         setLoading={setLoading}
                         setError={setError}
                     />
@@ -25,7 +25,7 @@ function App() {
                     {isLoading ? (
                         <Loader />
                     ) : (
-                        <CharacterList characters={character} error={error} />
+                        <AnimeList animeTitles={animeTitles} error={error} />
                     )}
                 </section>
             </ErrorBoundary>

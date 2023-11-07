@@ -1,28 +1,14 @@
-import { EmptyInputResponse, Character, APIError } from '../types/types';
-
-export async function fetchCharacters(): Promise<EmptyInputResponse> {
-    try {
-        const response = await fetch(
-            'https://rickandmortyapi.com/api/character/?page=1'
-        );
-        const result = await response.json();
-        console.log(result);
-        return result;
-    } catch {
-        throw new Error('Sorry, can`t fetch characters');
+export async function fetchAnime(id: string = '') {
+    let baseUrl = 'https://api.jikan.moe/v4/anime';
+    if (id) {
+        baseUrl = baseUrl.concat('/', id);
     }
-}
-
-export async function searchCharacter(
-    id: string
-): Promise<Character | APIError | Character[]> {
     try {
-        const response = await fetch(
-            `https://rickandmortyapi.com/api/character/${id}`
-        );
+        const response = await fetch(baseUrl);
         const result = await response.json();
         return result;
-    } catch {
-        throw new Error('Sorry, can`t find this character');
+    } catch (e) {
+        return e;
+        // throw new Error('Oops, something went wrong. Try again later');
     }
 }
