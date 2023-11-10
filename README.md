@@ -1,1 +1,0 @@
-Rolling Scopes School React repo
