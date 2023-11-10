@@ -25,11 +25,13 @@ function AnimeList(props: PropsType) {
         );
     }
     return (
-        <ul>
-            {animeTitles.map((anime) => (
-                <AnimeItem animeTitle={anime} key={anime.mal_id} />
-            ))}
-        </ul>
+        <div>
+            <ul>
+                {animeTitles.map((anime) => (
+                    <AnimeItem animeTitle={anime} key={anime.mal_id} />
+                ))}
+            </ul>
+        </div>
     );
 }
 
