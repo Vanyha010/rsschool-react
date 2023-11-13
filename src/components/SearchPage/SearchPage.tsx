@@ -12,6 +12,7 @@ function SearchPage() {
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [pageNumber, setPageNumber] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchParams, setSearchParams] = useSearchParams();
 
     return (
@@ -24,10 +25,13 @@ function SearchPage() {
                     searchParams={searchParams}
                     setSearchParams={setSearchParams}
                     setPageNumber={setPageNumber}
+                    setItemsPerPage={setItemsPerPage}
                 />
                 <Pagination
                     pageNumber={pageNumber}
                     setSearchParams={setSearchParams}
+                    searchParams={searchParams}
+                    itemsPerPage={itemsPerPage}
                 ></Pagination>
                 {isLoading ? (
                     <Loader />

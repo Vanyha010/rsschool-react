@@ -12,6 +12,7 @@ interface Props {
     searchParams: URLSearchParams;
     setSearchParams: SetURLSearchParams;
     setPageNumber: (pageNumber: number) => void;
+    setItemsPerPage: (pageLimit: number) => void;
 }
 
 function SearchBar(props: Props) {
@@ -28,6 +29,7 @@ function SearchBar(props: Props) {
         searchParams,
         setSearchParams,
         setPageNumber,
+        setItemsPerPage,
     } = props;
 
     function checkInputValue(event: ChangeEvent<HTMLInputElement>) {
@@ -85,14 +87,16 @@ function SearchBar(props: Props) {
 
     useEffect(() => {
         const currentPageNumber = searchParams.get('page')?.toString();
+        const currentPageLimit = searchParams.get('limit')?.toString();
         setPageNumber(Number(currentPageNumber));
+        setItemsPerPage(Number(currentPageLimit));
         const params = {
             page: currentPageNumber || '1',
-            limit: '10',
+            limit: currentPageLimit || '10',
         };
 
         setSearchParams({ ...params });
-        makeApiCall(Number(currentPageNumber));
+        makeApiCall(Number(currentPageNumber), Number(currentPageLimit));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
 
