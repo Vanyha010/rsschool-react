@@ -11,8 +11,8 @@ interface Props {
     setError: (error: string) => void;
     searchParams: URLSearchParams;
     setSearchParams: SetURLSearchParams;
-    setPageNumber: (pageNumber: number) => void;
     setItemsPerPage: (pageLimit: number) => void;
+    setPageNumber: (pageNumber: number) => void;
 }
 
 function SearchBar(props: Props) {

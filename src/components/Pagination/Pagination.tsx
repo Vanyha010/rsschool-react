@@ -4,12 +4,11 @@ import './Pagination.css';
 type PropsType = {
     pageNumber: number;
     setSearchParams: SetURLSearchParams;
-    searchParams: URLSearchParams;
     itemsPerPage: number;
 };
 
 export default function Pagination(props: PropsType) {
-    const { pageNumber, setSearchParams, searchParams, itemsPerPage } = props;
+    const { pageNumber, setSearchParams, itemsPerPage } = props;
     const isFirstPage = pageNumber === 1;
     const perPageItems = [10, 15, 20];
 
@@ -36,7 +35,6 @@ export default function Pagination(props: PropsType) {
         };
         console.log(params);
         setSearchParams(params);
-        // setItemsPerPage(Number(value));
     };
 
     return (
@@ -49,15 +47,12 @@ export default function Pagination(props: PropsType) {
                 <button onClick={nextPage}>&gt;</button>
             </div>
             <div>
-                <select onChange={(e) => changeItemsPerPage(e.target.value)}>
+                <select
+                    onChange={(e) => changeItemsPerPage(e.target.value)}
+                    value={itemsPerPage}
+                >
                     {perPageItems.map((item, index) => (
-                        <option
-                            value={item}
-                            key={index}
-                            selected={
-                                Number(searchParams.get('limit')) === item
-                            }
-                        >
+                        <option value={item} key={index}>
                             {item} items per page
                         </option>
                     ))}

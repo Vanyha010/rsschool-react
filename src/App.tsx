@@ -1,10 +1,13 @@
 import SearchPage from './components/SearchPage/SearchPage';
 import './App.css';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
     return (
         <div>
-            <SearchPage />
+            <ErrorBoundary>
+                <SearchPage />
+            </ErrorBoundary>
         </div>
     );
 }
